@@ -19,11 +19,12 @@ int main(int argc, char** argv)
 
 #ifdef TS_PLATFORM_WIN32
 
-	startup.appInstance = (void*)GetModuleHandle(0);
+	SetProcessDPIAware();
+	
 	startup.showWindow = SW_SHOWDEFAULT;
 
 	char path[MAX_PATH];
-	GetModuleFileNameA((HMODULE)startup.appInstance, path, MAX_PATH);
+	GetCurrentDirectoryA(MAX_PATH, path);
 	startup.appPath = path;
 
 #endif

@@ -44,8 +44,8 @@ namespace ts
 
 	struct SWindowRect
 	{
-		uint32 x = 0;
-		uint32 y = 0;
+		int x = 0;
+		int y = 0;
 		uint32 w = 0;
 		uint32 h = 0;
 	};
@@ -53,8 +53,8 @@ namespace ts
 	struct SWindowDesc
 	{
 		std::string title;
-		SWindowRect rect;
-		void* appInstance = nullptr;
+		uint32 width = 0;
+		uint32 height = 0;
 	};
 
 	//Window class - represents an application window

@@ -8,6 +8,7 @@
 #include <tscore/system/info.h>
 #include <tscore/system/thread.h>
 #include <tscore/system/error.h>
+#include <tscore/filesystem/pathhelpers.h>
 #include <tsgraphics/colour.h>
 
 //Modules
@@ -109,7 +110,7 @@ CEngineEnv::CEngineEnv(const SEngineStartupParams& params)
 	}
 
 	//Config loader
-	Path cfgpath(params.appPath.getParent());
+	Path cfgpath(params.appPath);
 	cfgpath.addDirectories((args.isArgumentTag("config")) ? args.getArgumentValue("config") : "config.ini");
 	ConfigFile config(cfgpath);
 
@@ -130,8 +131,6 @@ CEngineEnv::CEngineEnv(const SEngineStartupParams& params)
 	/////////////////////////////////////////////////////////////////////////
 	
 	//Set application window parameters
-	SDisplayInfo dispinf;
-	getPrimaryDisplayInformation(dispinf);
 	uint32 width = 800;
 	uint32 height = 600;
 	config.getProperty("video.resolutionW", width);
@@ -139,11 +138,8 @@ CEngineEnv::CEngineEnv(const SEngineStartupParams& params)
 
 	SWindowDesc windesc;
 	windesc.title = params.appPath.str();
-	windesc.rect.x = (dispinf.width - width) / 2;
-	windesc.rect.y = (dispinf.height - height) / 2;
-	windesc.rect.w = width;
-	windesc.rect.h = height;
-	windesc.appInstance = params.appInstance;
+	windesc.width = width;
+	windesc.height = height;
 	
 	//Create application window object
 	m_window.reset(new EngineWindow(*this, windesc));
@@ -161,8 +157,11 @@ CEngineEnv::CEngineEnv(const SEngineStartupParams& params)
 
 	string assetpathbuf;
 	config.getProperty("system.assetdir", assetpathbuf);
-	Path assetpath = params.appPath.getParent();
-	assetpath.addDirectories(assetpathbuf);
+	Path assetpath = params.appPath;
+	if (isAbsolutePath(assetpathbuf))
+		assetpath = assetpathbuf;
+	else
+		assetpath.addDirectories(assetpathbuf);
 
 	uint32 samplecount = 1;
 	config.getProperty("video.multisamplecount", samplecount);

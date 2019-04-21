@@ -126,7 +126,8 @@ struct CWindow::Impl
 	string windowClassname;
 	string windowTitle;
 
-	SWindowRect size;
+	uint32 width;
+	uint32 height;
 
 	list<CWindow::IEventListener*> windowEventListeners;
 	
@@ -134,9 +135,10 @@ struct CWindow::Impl
 		window(window),
 		windowClassname("tsAppWindow"),
 		windowTitle(desc.title),
-		size(desc.rect)
+		width(desc.width),
+		height(desc.height)
 	{
-		windowModule = (HMODULE)desc.appInstance;
+		windowModule = NULL;
 
 		//Set win32 window class values
 		ZeroMemory(&windowClass, sizeof(WNDCLASSEX));
@@ -233,12 +235,20 @@ struct CWindow::Impl
 		UINT styles = WS_VISIBLE | WS_OVERLAPPEDWINDOW;
 		UINT exStyles = WS_EX_APPWINDOW;
 
+		RECT dtRect;
+		GetClientRect(GetDesktopWindow(), &dtRect);
+		LONG dtWidth = dtRect.right - dtRect.left;
+		LONG dtHeight = dtRect.bottom - dtRect.top;
+		
+		LONG x = max((dtWidth  - (LONG)width) / 2, 0);
+		LONG y = max((dtHeight - (LONG)height) / 2, 0);
+
 		RECT r = {
-			(LONG)size.x,
-			(LONG)size.y,
+			x,
+			x,
 			//Convert width/height into coordinates of bottom right corner
-			(LONG)size.x + (LONG)size.w,
-			(LONG)size.y + (LONG)size.h
+			x + (LONG)width,
+			y + (LONG)height
 		};
 
 		//Set size of the client area of the window - prevents visual artifacting
@@ -248,7 +258,7 @@ struct CWindow::Impl
 			exStyles  
 		);
 		
-		windowHandle = CreateWindowEx(
+		windowHandle = CreateWindowExA(
 			exStyles,
 			windowClassname.c_str(),
 			windowTitle.c_str(),

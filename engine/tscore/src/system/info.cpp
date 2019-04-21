@@ -6,6 +6,7 @@
 
 #include <windows.h>
 #include <Psapi.h>
+#include <intrin.h>
 
 #include <tscore/debug/log.h>
 

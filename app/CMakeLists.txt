@@ -3,7 +3,7 @@
 #
 
 SET(src_list
-	
+
 	src/main.cpp
 	src/application.cpp
 	src/application.h
@@ -42,9 +42,18 @@ ASSIGN_SOURCE_GROUPS(${src_list})
 
 TARGET_LINK_LIBRARIES(application PUBLIC tsengine)
 
-#Copy config.ini file to the build folder
-ADD_CUSTOM_COMMAND(
-	TARGET application POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different "${PROJECT_SOURCE_DIR}/config.ini" $<TARGET_FILE_DIR:application>
-	DEPENDS ${PROJECT_SOURCE_DIR}/config.ini
+#Config.ini
+set(TS_ASSETS_PATH "${PROJECT_SOURCE_DIR}/assets")
+
+CONFIGURE_FILE(
+	"${PROJECT_SOURCE_DIR}/config.ini"
+	"${CMAKE_CURRENT_BINARY_DIR}/config.ini"
 )
+
+set(TS_ASSETS_PATH "../assets")
+
+CONFIGURE_FILE(
+	"${PROJECT_SOURCE_DIR}/config.ini"
+	"${PROJECT_BINARY_DIR}/staging/config.ini"
+)
+INSTALL(FILES "${PROJECT_BINARY_DIR}/staging/config.ini" DESTINATION ${TS_BINARY_INSTALL})
