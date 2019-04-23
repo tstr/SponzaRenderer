@@ -26,7 +26,7 @@ CRenderModule::CRenderModule(const SRenderModuleConfiguration& cfg) :
 	sourcepath.addDirectories("shaders");
 	m_shaderManager.setSourcepath(sourcepath);
 
-	m_shaderManager.setFlags(m_shaderManager.getFlags() | eShaderManagerFlag_Debug);
+	m_shaderManager.setFlags(m_shaderManager.getFlags());
 }
 
 CRenderModule::~CRenderModule()

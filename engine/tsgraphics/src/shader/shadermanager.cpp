@@ -43,7 +43,7 @@ bool CShaderManager::createShaderFromString(ShaderId& id, const char* code, cons
 {
 	SShaderCompileConfig config;
 	config.entrypoint.set(entrypoint);
-	config.debuginfo = m_flags & eShaderManagerFlag_Debug;
+	config.debuginfo = m_flags;
 	config.stage = stage;
 
 	MemoryBuffer bytecode;
@@ -80,7 +80,7 @@ bool CShaderManager::createShaderFromFile(ShaderId& id, const Path& codefile, co
 
 	SShaderCompileConfig config;
 	config.entrypoint.set(entrypoint);
-	config.debuginfo = m_flags & eShaderManagerFlag_Debug;
+	config.debuginfo = m_flags;
 	config.stage = stage;
 
 	if (!m_shaderCompiler->compile(sourcestream.str().c_str(), config, bytecode))
